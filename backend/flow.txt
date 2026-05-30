@@ -1,0 +1,28 @@
+-authentication system
+-chat with AI
+-Chat History
+-Message Storage
+-Ai with internet research feature
+
+
+Schema
+-user
+.id
+.email
+.password
+.verifies
+.createdAt
+.UpdatedAt
+
+-Chat
+.id
+.user
+.title
+.createdAt
+.UpdatedAt
+
+-Message
+.id
+.chat
+.content
+.role[user,ai]
