@@ -1,0 +1,4 @@
+Api Layer
+Service Layer - Integrate Api
+State layer - state manage karna like loding manage karna usrname post list error etc
+Api - backend se communicate karna

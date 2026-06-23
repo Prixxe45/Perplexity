@@ -19,13 +19,17 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  lastVerificationEmailSentAt: {
+    type: Date,
+    default: null,
+  }
 },{
   timestamps: true,
 });
 
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) {
-    return next();
+    return ;
   }
   this.password = await bcrypt.hash(this.password, 10);
  

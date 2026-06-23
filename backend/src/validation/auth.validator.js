@@ -23,3 +23,24 @@ export const registerValidation = [
   validate
 ]
 
+export const loginValidation = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email format")
+    .normalizeEmail(),
+
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    )
+    .withMessage(
+      "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character",
+    ),
+  validate,
+];
+
