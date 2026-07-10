@@ -3,6 +3,7 @@ import Login from "../features/auth/pages/Login.jsx";
 import Register from "../features/auth/pages/Register.jsx";
 import Protected from "../features/auth/components/Protected.jsx";
 import Dashboard from "../features/chat/pages/Dashboard.jsx";
+import ResendVerification from "../features/auth/pages/ResendVerification.jsx";
 
 
 export const router = createBrowserRouter([
@@ -13,6 +14,10 @@ export const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+      path:"/resend-verification",
+  element:<ResendVerification />
   },
   {
     path: "/",

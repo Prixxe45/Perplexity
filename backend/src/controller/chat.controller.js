@@ -38,14 +38,14 @@ export async function sendMessage(req, res) {
 
   const result = await generateResponse(messages);
 
-  const textResult = result
-    .filter((item) => item.type === "text")
-    .map((item) => item.text)
-    .join("");
+  const textResult = String(result);
+    
+
+    
 
   const aiMessage = await messageModel.create({
     chat: currentChatId,
-    content: textResult,
+    content: textResult.content || textResult,
     role: "ai",
   });
 
@@ -101,19 +101,24 @@ export async function deleteChat(req,res){
 const {chatId} = req.params;
 
 const chat = await chatModel.findOne({
-  chat: chatId,
+  _id: chatId,
   user: req.user.id
 })
+
+if (!chat) {
+  return res.status(404).json({
+    message: "Chat not Found",
+  });
+}
+
 
 await messageModel.deleteMany({
   chat: chatId
 })
+await chatModel.deleteOne({
+  _id: chatId
+})
 
-if(!chat){
-  return res.status(404).json({
-    message: "Chat not Found"
-  })
-}
 
 res.status(200).json({
   message: "chat deleted successFully"

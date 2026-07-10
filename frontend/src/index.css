@@ -1,1 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 @import "tailwindcss";
+
+body {
+  font-family: 'Kalam', cursive;
+  cursor: url('/among-us-chocolate-chip-cookie-character-pack_hand.PNG') 16 16, auto; 
+        
+      
+}
+.paper-bg {
+  background-color: #f5ead1;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.05) 1px, transparent 0);
+  background-size: 12px 12px;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -1,22 +1,31 @@
 import React from 'react'
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from '../hook/useAuth'
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const submitForm = (event) => {
+  const { handleRegister } = useAuth();
+
+  const submitForm = async(event) => {
     event.preventDefault();
 
+  
     const payload = {
       username,
       email,
       password,
     };
+    
+    await handleRegister(payload);
 
-    console.log("Register payload:", payload);
+// setUsername("");
+// setEmail("");
+// setPassword("");
+    
   };
 
   return (
@@ -98,6 +107,15 @@ const Register = () => {
               className="font-semibold text-[#31b8c6] transition hover:text-[#45c7d4]"
             >
               Login
+            </Link>
+          </p>
+          <p className="mt-6 text-center text-sm text-zinc-300">
+            Didn't receive the verification email?{" "}
+            <Link
+              to="/resend-verification"
+              className="font-semibold text-[#31b8c6] transition hover:text-[#45c7d4]"
+            >
+              Resend Email
             </Link>
           </p>
         </div>

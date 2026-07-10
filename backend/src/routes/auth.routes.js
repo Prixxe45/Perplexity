@@ -6,6 +6,7 @@ import {
   login,
   getMe,
   verifyEmail,
+  logoutUser,
 } from "../controller/auth.controller.js";
 
 import { loginValidation } from "../validation/auth.validator.js";
@@ -51,5 +52,12 @@ authRouter.get("/get-me", authUser, getMe);
  * @query {token}
  */
 authRouter.get("/verify-email", verifyEmail);
+
+/** 
+ * @route Post /api/auth/logout
+ * @desc Logout user and invalidate JWT token
+ * @access Private
+ */
+authRouter.post("/logout", authUser, logoutUser);
 
 export default authRouter;

@@ -1,15 +1,22 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useChat } from "../hooks/useChat";
+import { useAuth} from "../../auth/hook/useAuth"
 import { useEffect, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Dashboard = () => {
   const chat = useChat();
+  const {handleLogout} = useAuth();
   const [chatInput, setChatInput] = useState("");
   const chats = useSelector((state) => state.chat.chats);
   const currentChatId = useSelector((state) => state.chat.currentChatId);
+  const user = useSelector((state) => state.auth.user)
 
   useEffect(() => {
     chat.initializeSocketConnection();
@@ -28,43 +35,71 @@ const Dashboard = () => {
     setChatInput("");
   };
 
+  const handleLogoutClick = async() => {
+    await handleLogout();
+    Navigate("/login");
+  };
+
+  const deleteChat = async(chatId) => {
+    await chat.handleDeleteChat(chatId);
+    chat.handleGetChats();
+  };
+
   const openChat = (chatId) => {
     chat.handleOpenChat(chatId, chats);
   };
 
   return (
-    <main className="min-h-screen w-full bg-[#07090f] p-3 text-white md:p-5">
+    <main className="min-h-screen w-full bg-[#e8d8b8] p-3 text-[#3b2f1f] md:p-5">
       <section className="mx-auto flex h-[calc(100vh-1.5rem)] w-full gap-4 rounded-3xl border   p-1 md:h-[calc(100vh-2.5rem)] md:gap-6 md:p-1 border-none">
-        <aside className="hidden h-full w-72 shrink-0 rounded-3xl border  bg-[#080b12] p-4 md:flex md:flex-col">
-          <h1 className="mb-5 text-3xl font-semibold tracking-tight">
-            Perplexity
+        <aside
+          className="hidden h-full w-72 shrink-0 rounded-3xl border bg-[#efe2c2]
+border-[#b89c6a] p-4 md:flex md:flex-col shadow-[0_12px_35px_rgba(0,0,0,0.22)]"
+        >
+          <h1 className="mb-5 text-5xl font-semibold tracking-tight">
+           Paper-Ai
           </h1>
 
-          <div className="space-y-2">
+          <div className="flex-1 space-y-2 overflow-y-auto chats-scroll">
             {Object.values(chats).map((chat, index) => (
-              <button
-                onClick={() => {
-                  openChat(chat.id);
-                }}
+              <div
                 key={index}
-                type="button"
-                className="w-full cursor-pointer rounded-xl border border-white/60 bg-transparent px-3 py-2 text-left text-base font-medium text-white/90 transition hover:border-white hover:text-white"
+                className="group flex items-center justify-between rounded-xl border border-[#b89c6a] px-3 py-2 hover:bg-[#e7d3ad]"
               >
-                {chat.title}
-              </button>
+                <button
+                  onClick={() => openChat(chat.id)}
+                  type="button"
+                  className="flex-1 text-left font-semibold text-[#4d3d28]"
+                >
+                  {chat.title}
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("DELETE CLICKED", chat.id);
+                    deleteChat(chat.id);
+                  }}
+                  className="hidden rounded p-1 text-red-500 hover:bg-brown-100 group-hover:block"
+                >
+                  <IconButton aria-label="delete" size="large">
+                    <DeleteIcon />
+                  </IconButton>
+                </button>
+              </div>
             ))}
           </div>
         </aside>
 
-        <section className="relative max-w-3/5 mx-auto flex h-full min-w-0 flex-1 flex-col gap-4">
+        <section className=" paper-bg relative flex h-full min-w-0 flex-1 flex-col gap-4 rounded-3xl border border-[#b89c6a] bg-[#f5ead1] p-6">
           <div className="messages flex-1 space-y-3 overflow-y-auto pr-1 pb-30">
             {chats[currentChatId]?.messages?.map((message) => (
               <div
                 key={message.id}
                 className={`max-w-[82%] w-fit rounded-2xl px-4 py-3 text-sm md:text-base ${
                   message.role === "user"
-                    ? "ml-auto rounded-br-none bg-white/12 text-white"
-                    : "mr-auto border-none text-white/90"
+                    ? "ml-auto rounded-br-none bg-[#e3c89d] text-[#3b2f1f] shadow-md"
+                    : "mr-auto border border-[#ccb58a] bg-[#f9f1df] text-[#3b2f1f] shadow-sm"
                 }`}
               >
                 {message.role === "user" ? (
@@ -101,28 +136,65 @@ const Dashboard = () => {
             ))}
           </div>
 
-          <footer className="rounded-3xl w-full absolute bottom-2 border border-white/60 bg-[#080b12] p-4 md:p-5">
+          <footer className="rounded-3xl w-[90%] absolute bottom-2 border border-[#b89c6a] bg-[#f8eed7] p-4 mb-2">
             <form
               onSubmit={handleSubmitMessage}
               className="flex flex-col gap-3 md:flex-row"
             >
-              <input
-                type="text"
+              <textarea
+                rows={1}
                 value={chatInput}
-                onChange={(event) => setChatInput(event.target.value)}
-                placeholder="Type your message..."
-                className="w-full rounded-2xl border border-white/50 bg-transparent px-4 py-3 text-lg text-white outline-none transition placeholder:text-white/45 focus:border-white/90"
+                onChange={(e) => {
+                  setChatInput(e.target.value);
+
+                  e.target.style.height = "auto";
+                  e.target.style.height = `${e.target.scrollHeight}px`;
+                }}
+                placeholder="Ask anything..."
+                className="max-h-52 min-h-[52px] w-full resize-none overflow-y-auto rounded-2xl border border-white/50 bg-transparent px-4 py-3 text-lg text-[#3b2f1f] outline-none placeholder:text-[#7a6a52]focus:border-white/90"
               />
               <button
                 type="submit"
                 disabled={!chatInput.trim()}
-                className="rounded-2xl border border-white/60 px-6 py-3 text-lg font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-2xl border border-[#b89c6a] bg-[#6f4e37] px-6 py-3 text-lg font-semibold text-[#f5ead1] transition hover:bg-[#5d3f2a] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Send
               </button>
             </form>
           </footer>
         </section>
+
+        <aside className="hidden w-72 shrink-0 lg:flex lg:flex-col">
+          <div
+            className="mt-auto h-full flex flex-col   justify-end   rounded-3xl border bg-[#efe2c2]
+            border-[#b89c6a] p-5"
+          >
+            <div className="group relative flex items-center gap-3 rounded-2xl border border-[#b89c6a] bg-[#f5ead1] p-3 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#6a3d7a] text-white">
+                {user?.username?.charAt(0).toUpperCase()}
+              </div>
+
+              <div className="min-w-0">
+                <h3 className="truncate font-semibold text-[#3b2f1f]">
+                  {user?.username}
+                </h3>
+
+                <p className="truncate text-sm text-[#7a6a52]">{user?.email}</p>
+              </div>
+
+              <div className="absolute -top-12 left-0 hidden rounded-lg border border-[#b89c6a] bg-[#f5ead1] px-3 py-2 text-sm text-[#3b2f1f] shadow-lg group-hover:block">
+                {user?.email}
+              </div>
+            </div>
+
+            <button
+              className="mt-5 w-full rounded-xl border border-[#a14d3a] py-3 text-[#a14d3a] hover:bg-[#e7d3ad]"
+              onClick={handleLogoutClick}
+            >
+              Logout
+            </button>
+          </div>
+        </aside>
       </section>
     </main>
   );

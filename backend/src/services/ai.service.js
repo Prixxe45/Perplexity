@@ -1,4 +1,4 @@
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatOpenAI } from "@langchain/openai";
 import { ChatMistralAI } from "@langchain/mistralai";
 import {
   HumanMessage,
@@ -10,10 +10,15 @@ import {
 import * as z from "zod";
 import { searchInternet } from "./internet.service.js";
 
-const geminiModel = new ChatGoogleGenerativeAI({
-  model: "gemini-flash-latest",
-  apiKey: process.env.GEMINI_API_KEY,
+
+const OpenAimodel = new ChatOpenAI({
+  model: "poolside/laguna-xs-2.1:free",
+  apiKey: process.env.OPENROUTER_API_KEY,
+  configuration: {
+    baseURL: "https://openrouter.ai/api/v1",
+  },
 });
+
 
 const mistralModel = new ChatMistralAI({
   model: "mistral-medium-latest",
@@ -29,7 +34,7 @@ const searchInternetTool = tool(searchInternet, {
 });
 
 const agent = createAgent({
-  model: mistralModel,
+  model: OpenAimodel,
   tools: [searchInternetTool],
 });
 
@@ -39,9 +44,7 @@ export async function generateResponse(messages) {
   const response = await agent.invoke({
     messages: [
       new SystemMessage(`
-                You are a helpful and precise assistant for answering questions.
-                If you don't know the answer, say you don't know. 
-                If the question requires up-to-date information, use the "searchInternet" tool to get the latest information from the internet and then answer based on the search results.
+                Always use the ${searchInternetTool.name} tool to get the latest information from the internet when needed.
             `),
       ...messages.map((msg) => {
         if (msg.role == "user") {
@@ -52,6 +55,7 @@ export async function generateResponse(messages) {
       }),
     ],
   });
+  console.log(JSON.stringify(response, null, 2));
 
   return response.messages[response.messages.length - 1].content;
 }

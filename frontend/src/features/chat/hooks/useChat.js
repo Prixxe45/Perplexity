@@ -89,10 +89,18 @@ export const useChat = () => {
     dispatch(setCurrentChatId(chatId));
   }
 
+  async function handleDeleteChat(chatId) {
+    setLoading(true);
+    console.log("Deleting chat with ID:", chatId);
+    const data = await deleteChat(chatId);
+    dispatch(setLoading(false))
+  }
+
   return {
     initializeSocketConnection,
     handleSendMessage,
     handleGetChats,
     handleOpenChat,
+    handleDeleteChat,
   };
 };
