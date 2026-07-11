@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "../services/mail.service.js";
 
 
+
 /**
  * 
  * @des register a new user 
@@ -51,7 +52,7 @@ await sendEmail({
 
   <div style="margin: 30px 0;">
     <a
-      href="http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}"
+      href="https://paper-ai-5t5i.onrender.com/api/auth/verify-email?token=${emailVerificationToken}"
       style="
         background-color: #2563eb;
         color: white;
@@ -90,7 +91,7 @@ Thank you for creating an account with Paper-AI.
 
 Please verify your email address using the link below:
 
-http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}
+https://paper-ai-5t5i.onrender.com/api/auth/verify-email?token=${emailVerificationToken}
 
 If you did not create this account, please ignore this email.
 
@@ -166,7 +167,7 @@ if (diff < 60000) {
          expiresIn: "1d",
        } )
 
-const verificationLink = `http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}`;
+const verificationLink = `https://paper-ai-5t5i.onrender.com/api/auth/verify-email?token=${emailVerificationToken}`;
 
    await sendEmail({
      to: email,
@@ -313,17 +314,23 @@ const token = jwt.sign({
   expiresIn: "7d",
 });
 
-res.cookie("token", token)
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
 
 res.status(200).json({
   message: "Login successful",
   success: true,
+  token,
   user: {
     id: user._id,
     username: user.username,
     email: user.email,
   },
-})
+});
 }
 
 /** 
@@ -399,7 +406,11 @@ try {
 export async function logoutUser(req, res) {
 const token = req.cookies.token;
 
-res.clearCookie("token")
+res.clearCookie("token", {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+});
 
 
 return res.status(200).json({

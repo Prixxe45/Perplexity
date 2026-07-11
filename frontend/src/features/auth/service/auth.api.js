@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://paper-ai-5t5i.onrender.com",
   withCredentials: true,
-})
+});
 
+// local http://localhost:3000
 export async function registerUser({username , email, password}) {
 console.log("hit");
 
