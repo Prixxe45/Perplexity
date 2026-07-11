@@ -22,9 +22,9 @@ const Register = () => {
     
     await handleRegister(payload);
 
-// setUsername("");
-// setEmail("");
-// setPassword("");
+setUsername("");
+setEmail("");
+setPassword("");
     
   };
 

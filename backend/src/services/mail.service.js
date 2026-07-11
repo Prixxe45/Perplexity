@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
 
+
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -11,6 +13,11 @@ const transporter = nodemailer.createTransport({
     pass: process.env.GOOGLE_APP_PASSWORD,
   },
 });
+console.log("GOOGLE_USER:", process.env.GOOGLE_USER);
+console.log(
+  "GOOGLE_APP_PASSWORD:",
+  process.env.GOOGLE_APP_PASSWORD ? "FOUND" : "MISSING",
+);
 
 
 transporter.verify()
