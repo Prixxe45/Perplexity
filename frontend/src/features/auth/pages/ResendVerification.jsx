@@ -40,6 +40,7 @@ const ResendVerification = () => {
                 className="mb-2 block text-sm font-medium text-zinc-200"
               >
                 Email Address
+                (if you haven't received the verification email wait 1 min and try again also check your spam folder)
               </label>
 
               <input
