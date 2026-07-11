@@ -388,7 +388,7 @@ try {
   const html = `<h1>Email Verified</h1><p>Thank you for verifying your email address. Your account is now active.</p>
  <p>You can now log in to your account and start using Perplexity.</p>
  <br>
- <a href="http://localhost:3000/login">Go to Login</a>
+ <a href="https://paper-ai2.onrender.com/login">Go to Login</a>
  <br>
  <p>Best Regards</p>
  <p>Team perplexiy</p>`;
