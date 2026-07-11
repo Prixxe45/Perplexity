@@ -80,6 +80,7 @@ const Register = () => {
                 className="mb-2 block text-sm font-medium text-zinc-200"
               >
                 Password
+                (minimum 8 characters with at least one uppercase letter, one lowercase letter, one number, and one special character)
               </label>
               <input
                 id="password"
