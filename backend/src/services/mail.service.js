@@ -13,6 +13,11 @@ export async function sendEmail({ to, subject, html, text }) {
       html: html || text,
     });
 
+    if (response.error) {
+      console.error("Resend Error:", response.error);
+      throw new Error(response.error.message);
+    }
+
     console.log("Email sent successfully:", response);
 
     return response;
