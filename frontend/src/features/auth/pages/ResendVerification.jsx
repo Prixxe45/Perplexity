@@ -1,23 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 
 const ResendVerification = () => {
   const [email, setEmail] = useState("");
   const { handleResendVerification } = useAuth();
-  const [timer, setTimer] = useState(0);
+  
 
-   useEffect(() => {
-     let interval;
 
-     if (timer > 0) {
-       interval = setInterval(() => {
-         setTimer((prev) => prev - 1);
-       }, 1000);
-     }
-
-     return () => clearInterval(interval);
-   }, [timer]);
 
   const submitForm = async (event) => {
     event.preventDefault();
@@ -28,10 +18,7 @@ const ResendVerification = () => {
 
   await handleResendVerification(payload);
   
- if(success !== false) {
-    setTimer(60);
-    setEmail("");
-  }
+ setEmail("");
     // await handleResendVerification(payload);
   };
 
@@ -56,8 +43,8 @@ const ResendVerification = () => {
                 htmlFor="email"
                 className="mb-2 block text-sm font-medium text-zinc-200"
               >
-                Email Address (if you haven't received the verification email
-                wait 1 min and try again also check your spam folder)
+                Email Address
+                (if you haven't received the verification email wait 1 min and try again also check your spam folder)
               </label>
 
               <input
@@ -73,17 +60,9 @@ const ResendVerification = () => {
 
             <button
               type="submit"
-              disabled={timer > 0}
-              className={`w-full rounded-lg px-4 py-3 font-semibold transition
-    ${
-      timer > 0
-        ? "cursor-not-allowed bg-zinc-700 text-zinc-400"
-        : "bg-[#31b8c6] text-zinc-950 hover:bg-[#45c7d4]"
-    }`}
+              className="w-full rounded-lg bg-[#31b8c6] px-4 py-3 font-semibold text-zinc-950 transition hover:bg-[#45c7d4] focus:outline-none focus:shadow-[0_0_0_3px_rgba(49,184,198,0.35)]"
             >
-              {timer > 0
-                ? `Resend available in ${timer}s`
-                : "Resend Verification Email"}
+              Resend Verification Email
             </button>
           </form>
 
