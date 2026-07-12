@@ -5,22 +5,35 @@ import { useAuth } from "../hook/useAuth";
 const ResendVerification = () => {
   const [email, setEmail] = useState("");
   const { handleResendVerification } = useAuth();
-  
+  const [showPopup, setShowPopup] = useState(false);
 
 
 
-  const submitForm = async (event) => {
-    event.preventDefault();
+ const submitForm = async (event) => {
+   event.preventDefault();
 
-    const payload = {
-      email,
-    };
+   try {
+     console.log("start");
 
-  await handleResendVerification(payload);
-  
- setEmail("");
-    // await handleResendVerification(payload);
-  };
+     const payload = { email };
+
+     await handleResendVerification(payload);
+
+     console.log("after api");
+
+     setShowPopup(true);
+
+     console.log("popup shown");
+
+     setEmail("");
+
+     setTimeout(() => {
+       setShowPopup(false);
+     }, 3000);
+   } catch (err) {
+     console.log("ERROR:", err);
+   }
+ };
 
  
 
@@ -37,14 +50,20 @@ const ResendVerification = () => {
             your email address below and we'll send you a new verification link.
           </p>
 
+          {showPopup && (
+            <div className="mb-4 rounded-lg border border-green-500 bg-green-500/10 p-3 text-green-400">
+              ✅ Email sent successfully. Please try again after 1 minute.
+            </div>
+          )}
+
           <form onSubmit={submitForm} className="mt-8 space-y-5">
             <div>
               <label
                 htmlFor="email"
                 className="mb-2 block text-sm font-medium text-zinc-200"
               >
-                Email Address
-                (if you haven't received the verification email wait 1 min and try again also check your spam folder)
+                Email Address (if you haven't received the verification email
+                wait 1 min and try again also check your spam folder)
               </label>
 
               <input
